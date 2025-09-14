@@ -1,0 +1,25 @@
+# Build Folders
+bin/
+obj/
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+
+# Rider IDE files
+.idea/
+
+# Resharper
+_ReSharper*/
+
+# Packages
+*.nupkg
+packages/
+
+# Logs
+*.log
+
+# Otros archivos locales
+*.tmp
+*.userprefs
