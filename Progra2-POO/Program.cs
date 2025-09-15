@@ -136,6 +136,34 @@ public class Banco
             Console.WriteLine($"Cliente: {cuenta.Cliente}, Cuenta: {cuenta.NumeroCuenta}, Saldo: {cuenta.Saldo:C}");
         }
     }
+
+    // ====== NUEVO MÉTODO: Transferencia ======
+    // POO: Uso de objetos y polimorfismo, ya que se trabaja con cuentas que pueden ser de distintos tipos.
+    public void Transferir(string origen, string destino, decimal monto)
+    {
+        var cuentaOrigen = BuscarCuenta(origen);
+        var cuentaDestino = BuscarCuenta(destino);
+
+        if (cuentaOrigen == null || cuentaDestino == null)
+        {
+            Console.WriteLine("Una de las cuentas no existe.");
+            return;
+        }
+
+        // Guardamos saldo inicial para verificar si el retiro fue exitoso
+        decimal saldoInicialOrigen = cuentaOrigen.Saldo;
+        cuentaOrigen.Retirar(monto); // Polimorfismo: Retirar se comporta distinto segun el tipo de cuenta
+
+        if (cuentaOrigen.Saldo < saldoInicialOrigen) // Significa que se retiró exitosamente
+        {
+            cuentaDestino.Depositar(monto); // Polimorfismo: Depositar puede ejecutarse de manera distinta
+            Console.WriteLine($"Transferencia de {monto:C} realizada con exito.");
+        }
+        else
+        {
+            Console.WriteLine("La transferencia no pudo realizarse (fondos insuficientes).");
+        }
+    }
 }
 
 // ====== PROGRAMA PRINCIPAL (INTERFAZ EN CONSOLA) ======
@@ -156,7 +184,8 @@ class Program
             Console.WriteLine("4. Retirar");
             Console.WriteLine("5. Aplicar interes");
             Console.WriteLine("6. Mostrar cuentas");
-            Console.WriteLine("7. Salir");
+            Console.WriteLine("7. Transferir dinero"); // Nueva opción
+            Console.WriteLine("8. Salir");
             Console.Write("Seleccione una opcion: ");
 
             string opcion = Console.ReadLine();
@@ -248,7 +277,19 @@ class Program
                     banco.MostrarCuentas();
                     break;
 
-                case "7":
+                case "7": // Nueva funcionalidad: Transferencia
+                    {
+                        Console.Write("Número de cuenta origen: ");
+                        string origen = Console.ReadLine();
+                        Console.Write("Número de cuenta destino: ");
+                        string destino = Console.ReadLine();
+                        decimal monto = LeerDecimal("Monto a transferir: ");
+                        // Uso de objetos y polimorfismo al transferir entre diferentes tipos de cuentas
+                        banco.Transferir(origen, destino, monto);
+                        break;
+                    }
+
+                case "8":
                     salir = true;
                     Console.WriteLine("Gracias por usar el sistema bancario.");
                     break;
